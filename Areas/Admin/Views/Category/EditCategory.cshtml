@@ -1,0 +1,58 @@
+﻿@model InventoryManagement.DataModel.Categorys
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Edit Category";
+}
+
+<div class="card card-primary mt-4">
+    <div class="card-header" style="background-color:#717171">
+        <h3 class="card-title text-white">Edit Category</h3>
+    </div>
+
+    <form asp-action="EditCategory" method="post">
+        <div class="card-body">
+
+            <!-- Hidden ID -->
+            <input type="hidden" name="CategoryID" value="@Model.CategoryID" />
+
+            <!-- Category Name -->
+            <div class="form-group mb-3">
+                <label asp-for="CategoryName" class="form-label">Category Name</label>
+                <input name="CategoryName" value="@Model.CategoryName" class="form-control" placeholder="Enter category name" oninput="validateName(this)" />
+                <div id="nameMsg" class="text-warning small"></div>
+                <span asp-validation-for="CategoryName" class="text-danger"></span>
+            </div>
+
+        </div>
+
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary" style="background-color:#717171">Update Category</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        function showMessage(msg, elementId) {
+            const el = document.getElementById(elementId);
+            el.innerText = msg;
+            setTimeout(() => el.innerText = '', 1500);
+        }
+
+        function validateName(input) {
+            const lastChar = input.value.slice(-1);
+
+            // If input is empty or last char is valid, do nothing
+            if (!lastChar || /^[a-zA-Z\s]$/.test(lastChar)) {
+                return;
+            }
+
+            // If invalid character, remove it and show warning
+            input.value = input.value.slice(0, -1); // remove last char
+            showMessage('Only alphabets and spaces allowed', 'nameMsg');
+        }
+    </script>
+
+}

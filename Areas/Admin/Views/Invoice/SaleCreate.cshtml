@@ -1,0 +1,224 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Invoice View";
+}
+
+<header>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+
+
+    <style>
+        span {
+            color: red;
+        }
+    </style>
+</header>
+
+<div class="col-md-12 ">
+    @* <div class="card shadow mb-4">
+        <div class="card-header bg-info text-white text-center">
+            <h4 class="mb-0">Invoice</h4>
+        </div>
+    </div>  *@
+    <form id="invoiceForm">
+        <div class="row">
+            <div class="col-md-7 ps-4">
+                <div class="card">
+                    <div class="card-header" style="background-color:#717171">
+                        <h6 class="mb-0 text-white">Customer Details</h6>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="Phone">Phone<span>*</span></label>
+                                    <input type="text" class="form-control" id="Phone" autocomplete="off" placeholder="Enter Phone Number" required>
+                                    <div id="suggestions" style="position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; display: none;"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="Name">Name</label>
+                                   
+                                    <input type="text" class="form-control" id="Name" placeholder="Enter Customer Name" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="Address">Address</label>
+                            <input type="text" class="form-control" id="Address" placeholder="Enter Address">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5 pe-4">
+                <div class="card">
+                    <div class="card-header" style="background-color:#717171">
+                        <h6 class="mb-0 text-white">Invoice Details</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="Invoice_ID">Invoice ID</label>
+                                    <input type="number" class="form-control" id="Invoice_ID" name="Invoice_ID" value="@DateTime.Now.ToString("yyyyMMddHHmmss")" placeholder="Enter Invoice ID" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="Date">Date</label>
+                                    <input type="date" class="form-control" id="Date" value="@DateTime.Today.ToString("yyyy-MM-dd")">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12 px-4">
+                <div class="card">
+                    <div class="card-header position-relative" style="background-color:#717171;">
+                        <h6 class="mb-0 text-white">Invoice Items</h6>
+                        <button type="button"
+                                class="btn btn-success btn-sm"
+                                style="position: absolute; top: 8px; right: 15px;"
+                                onclick="addItem()">
+                            Add Item
+                        </button>
+                    </div>
+
+
+                    <div class="card-body">
+                        <div class="row mb-3 align-items-end">
+                            <div class="col-md-7">
+                                <label>Product Name<span>*</span></label>
+                                <input name="Description" id="Description" class="form-control" autocomplete="off" placeholder="Add Product Name" />
+                                <div id="productsuggestions" style="position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; display: none;"></div>
+                            </div>
+                            <input name="ProductGuid" id="ProductGuid" type="hidden" />
+                            <div class="col-md-1">
+                                <label>Quantity<span>*</span></label>
+                                <input name="Quantity" type="number" class="form-control" min="0" placeholder="" />
+                            </div>
+                            <div class="col-md-2">
+                                <label>Unit Price<span>*</span></label>
+                                <input name="UnitPrice" type="number" id="UnitPrice" class="form-control" min="0" placeholder="" />
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <label>Total Price</label>
+                                <input name="TotalPrice" id="TotalPrice" type="number" class="form-control" placeholder="0" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="row mt-4">
+        <div class="col-12 px-4">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="card shadow mb-4">
+                        <div class="card-header" style="background-color:#717171">
+                            <h6 class="mb-0  text-white">Order List</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th scope="col" style="width: 50%;">Product Name</th>
+                                            <th scope="col" style="width: 10%;">Quantity</th>
+                                            <th scope="col" style="width: 10%;">Price</th>
+                                            <th scope="col" style="width: 10%;">Total</th>
+                                            <th scope="col" style="width: 10%;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="items-container">
+                                       
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card shadow mb-4">
+                        <div class="card-header" style="background-color:#717171">
+                            <h6 class="mb-0 text-white">Order Summary</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group mb-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <label for="subtotal" class="mb-0">Subtotal:</label>
+                                    <input type="text" id="subtotal" class="form-control text-end" placeholder="0.00" readonly style="max-width: 120px;">
+                                </div>
+                            </div>
+                      
+                            <hr>
+                            <div class="form-group mb-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <label for="ManualDiscount" class="mb-0">Discount:</label>
+                                    <input type="text" name="ManualDiscount" id="ManualDiscount" class="form-control text-end" style="max-width: 120px;">
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="form-group mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <label for="grandTotal" class="fw-bold mb-0">Grand Total:</label>
+                                    <input type="text" id="grandTotal" class="form-control text-end fw-bold" placeholder="0.00" readonly style="max-width: 120px;">
+                                </div>
+                            </div>
+                            <div class="form-group mb-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <label for="Pay" class="fw-bold mb-0">Pay:</label>
+                                    <input type="text" name="Pay" id="Pay" class="form-control text-end" style="max-width: 120px;">
+                                </div>
+                            </div>
+                            <div class="form-group mb-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <label for="Due" class="fw-bold mb-0">Due:</label>
+                                    <input type="text" name="Due" id="Due" class="form-control text-end fw-bold" placeholder="0.00" readonly style="max-width: 120px;">
+                                </div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="fw-bold mb-2">Payment Method:<sup><span>*</span></sup></label>
+                                <div class="d-flex flex-wrap gap-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="paymentType" id="paymentTypeCash" value="Cash" checked>
+                                        <label class="form-check-label" for="paymentTypeCash">Cash</label>
+                                    </div>
+                                                         
+                                </div>
+                            </div>
+
+                            <div class="mt-12 d-flex justify-content-center">
+                                <button type="button" id="SaveButton" class="btn btn-success me-2 flex-grow-1">
+                                    Save
+                                </button>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+@*<script src="~/js/jquery-3.6.0.min.js"></script>*@
+@*<script src="~/js/alert.js"></script>*@
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/salecreatejs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+}

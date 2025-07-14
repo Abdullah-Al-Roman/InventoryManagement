@@ -1,0 +1,97 @@
+﻿@model IEnumerable<InventoryManagement.Areas.Admin.Data.InvoiceVM>
+
+@{
+    ViewData["Title"] = "Invoice List";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.1/css/dataTables.dataTables.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.3/css/buttons.dataTables.css">
+<form method="get" asp-controller="Invoice" asp-action="SaleReport" class="form-inline mb-3">
+    <div class="form-group mr-2">
+        <label for="fdate" class="mr-2">From:</label>
+        <input type="date" name="fdate" id="fdate" class="form-control" value="@ViewBag.FromDate" />
+    </div>
+    <div class="form-group mr-2">
+        <label for="tdate" class="mr-2">To:</label>
+        <input type="date" name="tdate" id="tdate" class="form-control" value="@ViewBag.ToDate" />
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<div class="card card-primary">
+    <div class="card-header text-white" style="background-color:#717171">
+        <h3 class="card-title">Sale List</h3>
+    </div>
+    <div class="card-body">
+        <table id="invoiceTable" class="table table-bordered table-hover">
+            <thead class="bg-light">
+                <tr>
+                    <th>Invoice Number</th>
+                    <th>Date</th>
+                    <th>Subtotal</th>
+                    <th>Discount</th>
+                    <th>Grand Total</th>
+                    <th>Pay</th>
+                    <th>Due</th>
+                    <th>Payment Type</th>
+                    <th>Client Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var invoice in Model.Select((value, index) => new { value, index }))
+                {
+                    <tr>
+                        <td>@(invoice.index + 1)</td>
+                        <td>@invoice.value.Date.ToString("yyyy-MM-dd")</td>
+                        <td>@invoice.value.Subtotal?.ToString("0.00")</td>
+                        <td>@invoice.value.Discount.ToString("0.00")</td>
+                        <td>@invoice.value.GrandTotal?.ToString("0.00")</td>
+                        <td>@invoice.value.Pay.ToString("0.00")</td>
+                        <td>@invoice.value.Due.ToString("0.00")</td>
+                        <td>@invoice.value.PaymentType</td>
+                        <td>@invoice.value.ClientName</td>
+                        <td>
+                            <a href="@Url.Action("InvoiceDetails", "Invoice", new { id = invoice.value.InvoiceId })" class="btn btn-xs btn-success me-1">View</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+            <tfoot class="bg-light font-weight-bold">
+                <tr>
+                    <td colspan="2">Total</td>
+                    <td>@ViewBag.TotalSubtotal.ToString("0.00")</td>
+                    <td>@ViewBag.TotalDiscount.ToString("0.00")</td>
+                    <td></td>
+                    <td>@ViewBag.TotalPay.ToString("0.00")</td>
+                    <td>@ViewBag.TotalDue.ToString("0.00")</td>
+                    <td colspan="3"></td>
+                </tr>
+            </tfoot>
+        </table>
+
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.3.1/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.2.3/js/dataTables.buttons.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.dataTables.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.print.min.js"></script>
+@section Scripts
+{
+    <script>
+        new DataTable('#invoiceTable', {
+            layout: {
+                topStart: {
+                    buttons: ['pdf']
+                }
+            }
+        });
+    </script>
+}

@@ -1,0 +1,68 @@
+﻿@model IEnumerable<InventoryManagement.DataModel.Vendors>
+
+@{
+    ViewData["Title"] = "VendorList";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.0/css/dataTables.dataTables.min.css" />
+<div class="card card-primary">
+    <div class="card-header" style="background-color:#717171">
+        <h3 class="card-title">Vendor List</h3>
+    </div>
+
+    <table id="myTableVendor" class="table">
+    <thead>
+        <tr>
+            <th>
+               Name
+            </th>
+            <th>
+                Phone
+            </th>
+            <th>
+               Email
+            </th>
+            <th>
+               Address
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+
+@foreach (var item in Model) 
+{
+        <tr>
+            <td>
+                @item.VendorName
+            </td>
+            <td>
+                @item.Phone
+            </td>
+            <td>
+                @item.Email
+            </td>
+            <td>
+                @item.Address
+            </td>
+            <td>
+                        <a href="@Url.Action("VendorEdit", "Vendor", new { id = @item.VendorID })" class="btn btn-xs btn-warning me-1">Edit</a>
+                        <a href="@Url.Action("DeleteVendor", "Vendor", new { id = @item.VendorID })" asp-action="Delete" asp-route-id="@item.VendorID" class="btn btn-xs btn-danger">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+@section Scripts {
+    <!-- ✅ Include the required DataTables JS (with HTTPS) -->
+    <script src="https://cdn.datatables.net/2.3.0/js/dataTables.min.js"></script>
+
+    <!-- ✅ Initialize DataTable -->
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            var table = new DataTable('#myTableVendor');
+        });
+    </script>
+}

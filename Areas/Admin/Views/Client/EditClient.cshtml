@@ -1,0 +1,92 @@
+﻿@model InventoryManagement.DataModel.Clients
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Edit Client";
+}
+
+<div class="card card-primary mt-4">
+    <div class="card-header" style="background-color:#717171">
+        <h3 class="card-title text-white">Edit Client</h3>
+    </div>
+
+    <form asp-action="EditClient" method="post">
+        <div class="card-body">
+
+            <!-- Hidden Client ID -->
+            <input type="hidden" value="@Model.ClientID" name="ClientID" />
+
+            <!-- Client Name -->
+            <div class="form-group mb-3">
+                <label asp-for="ClientName" class="form-label">Client Name</label>
+                <input name="ClientName" value="@Model.ClientName" class="form-control" placeholder="Enter client name" oninput="validateName(this)" />
+                <div id="nameMsg" class="text-warning small"></div>
+                <span asp-validation-for="ClientName" class="text-danger"></span>
+            </div>
+
+            <!-- Phone -->
+            <div class="form-group mb-3">
+                <label asp-for="Phone" class="form-label">Phone</label>
+                <input name="Phone" value="@Model.Phone" class="form-control" placeholder="Enter phone number" maxlength="11" oninput="validateNumber(this)" />
+                <div id="phoneMsg" class="text-warning small"></div>
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group mb-3">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input name="Email" value="@Model.Email" type="email" class="form-control" placeholder="Enter email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <!-- Address -->
+            <div class="form-group mb-3">
+                <label asp-for="Address" class="form-label">Address</label>
+                <textarea name="Address" id="Address" class="form-control" rows="3" placeholder="Enter address">@Model.Address</textarea>
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+        </div>
+
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary" style="background-color:#717171">Update Client</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        function showMessage(msg, elementId) {
+            const el = document.getElementById(elementId);
+            el.innerText = msg;
+            setTimeout(() => el.innerText = '', 1500);
+        }
+
+        function validateName(input) {
+            const lastChar = input.value.slice(-1);
+
+            // If input is empty or last char is valid, do nothing
+            if (!lastChar || /^[a-zA-Z\s]$/.test(lastChar)) {
+                return;
+            }
+
+            // If invalid character, remove it and show warning
+            input.value = input.value.slice(0, -1); // remove last char
+            showMessage('Only alphabets and spaces allowed', 'nameMsg');
+        }
+
+            function validateNumber(input) {
+            const lastChar = input.value.slice(-1);
+
+            // If input is empty or last character is valid digit, do nothing
+            if (!lastChar || /^[0-9]$/.test(lastChar)) {
+                return;
+            }
+
+            // If invalid character, remove it and show warning
+            input.value = input.value.slice(0, -1);
+            showMessage('Only numbers allowed', 'phoneMsg');
+        }
+    </script>
+}

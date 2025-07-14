@@ -1,0 +1,65 @@
+﻿@model InventoryManagement.DataModel.Invoice
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Invoice Details";
+}
+
+<!-- ✅ CSS for DataTables and Buttons -->
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.1/css/dataTables.dataTables.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.3/css/buttons.dataTables.css" />
+
+<div class="card">
+    <div class="card-header" style="background-color:#717171">
+        <h4 class="card-title text-white">Invoice Details</h4>
+    </div>
+    <div class="card-body">
+        <table id="invoiceTable" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Grand Total</th>
+                    @*<th>Payment Type</th>*@
+                    <th>Paid</th>
+                    <th>Due</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.Date.ToString("yyyy-MM-dd")</td>
+                    <td>@Model.GrandTotal?.ToString("0.00")</td>
+                    @*<td>@Model.PaymentType</td>*@
+                    <td>@Model.Pay.ToString("0.00")</td>
+                    <td>@Model.Due.ToString("0.00")</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ✅ Only Required Scripts for PDF Button -->
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://cdn.datatables.net/2.3.1/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.3/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            new DataTable('#invoiceTable', {
+                dom: 'Bfrtip',
+                paging: false,
+                searching: false,
+                info: false,
+                ordering: false,
+                buttons: [
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Invoice Details'
+                    }
+                ]
+            });
+        });
+    </script>
+}

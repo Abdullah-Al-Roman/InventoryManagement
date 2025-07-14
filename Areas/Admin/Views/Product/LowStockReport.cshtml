@@ -1,0 +1,80 @@
+﻿@using InventoryManagement.Models
+@model IEnumerable<LowStockProductVM> //get list
+
+@{
+    ViewData["Title"] = "Low Stock Report";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.1/css/dataTables.dataTables.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.3/css/buttons.dataTables.css">
+<form asp-action="LowStockReport" method="get" class="mb-3">
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">Low Stock Threshold:</label>
+        <div class="col-sm-4">
+            <input type="number" name="stockQty" min="0" value="@ViewBag.StockQty" class="form-control" />
+        </div>
+        <div class="col-sm-2">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+    </div>
+</form>
+<div class="card card-primary">
+    <div class="card-header text-white" style="background-color:#717171">
+        <h3 class="card-title">Sale List</h3>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-striped" id="invoiceTable">
+    <thead class="bg-light">
+        <tr>
+            <th>#</th>
+            <th>Product Name</th>
+            <th>Vendor Name</th>
+            <th>Stock Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr><td colspan="4" class="text-center text-danger">No low stock products found.</td></tr>
+        }
+        else
+        {
+            int index = 1;
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@index</td>
+                    <td>@item.ProductName</td>
+                    <td>@item.VendorName</td>
+                    <td>@item.Quantity</td>
+                </tr>
+                index++;
+            }
+        }
+    </tbody>
+</table>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdn.datatables.net/2.3.1/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.2.3/js/dataTables.buttons.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.dataTables.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.print.min.js"></script>
+@section Scripts
+{
+    <script>
+        new DataTable('#invoiceTable', {
+            layout: {
+                topStart: {
+                    buttons: ['pdf']
+                }
+            }
+        });
+    </script>
+}
